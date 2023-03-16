@@ -1,0 +1,21 @@
+{
+    "name": "aigeoo/chaty",
+    "type": "project",
+    "require": {
+        "nunomaduro/termwind": "^1.15",
+        "react/event-loop": "^1.3",
+        "react/socket": "^1.12",
+        "vlucas/phpdotenv": "^5.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Aigeoo\\Chaty\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "AIGEOO",
+            "email": "yosifsalimalessaei@gmail.com"
+        }
+    ]
+}
