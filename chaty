@@ -24,8 +24,8 @@ if (isset($argv[1])) {
 	echo <<<TEXT
 	Usage: php chaty <option>
 	Options:
-	    1. start
-	    2. client
+        1. start
+        2. client
 	TEXT;
 }
 	
