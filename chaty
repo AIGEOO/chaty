@@ -1,22 +1,31 @@
 <?php
 
 use Dotenv\Dotenv;
+use React\EventLoop\Loop;
 
-require __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
-$serverPath = __DIR__ . '/src/Server.php';
-$clientPath = __DIR__ . '/src/Client.php';
+$url = $_ENV['TCP_ADDRESS_URL'] . ':' . $_ENV['TCP_ADDRESS_PORT'];
+$loop = Loop::get();
 
-function isListening()
-{
-    return empty(exec('netstat -an | grep ' . $_ENV['TCP_ADDRESS_PORT']));
+require_once __DIR__ . '/src/Server.php';
+require_once __DIR__ . '/src/Client.php';
+
+if (isset($argv[1])) {
+	if ($argv[1] == 'start' && isNotListening()) {
+		server();
+	} else {
+		client();
+	}
+} else {
+	echo <<<TEXT
+	Usage: php chaty <option>
+	Options:
+	    1. start
+	    2. client
+	TEXT;
 }
-
-if (! isListening()) {
-    exec('php ' . __DIR__ . $serverPath . ' > /dev/null 2>&1 &');
-}
-
-exec('php ' . __DIR__ . $clientPath);
+	

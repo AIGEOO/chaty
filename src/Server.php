@@ -1,40 +1,38 @@
 <?php
 
-declare(strict_types=1);
-
-use Dotenv\Dotenv;
-use React\EventLoop\Loop;
+use function Termwind\{render};
 use React\Socket\SocketServer;
 use React\Socket\ConnectionInterface;
 
-require __DIR__ . '/../vendor/autoload.php';
+function server() {
+	global $loop, $url;	
 
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
-$dotenv->load();
+	$socket = new SocketServer($url, [], $loop);
 
-$url = $_ENV['TCP_ADDRESS_URL'] . ':' . $_ENV['TCP_ADDRESS_PORT'];
-$loop = Loop::get();
+	$clients = new \SplObjectStorage();
 
-$socket = new SocketServer($url, [], $loop);
+	$socket->on('connection', function (ConnectionInterface $connection) use ($clients) {
+	    echo "New connection from " . $connection->getRemoteAddress() . "\n";
 
-$clients = new \SplObjectStorage();
+	    $clients->attach($connection);
+	    
+	    $connection->write(render('<p class="justify-center bg-green-900 px-1 font-bold">User Connected successfully</p>'));
 
-$socket->on('connection', function (ConnectionInterface $connection) use ($clients) {
-    echo "New connection from " . $connection->getRemoteAddress() . "\n";
+	    $connection->on('data', function ($data) use ($connection, $clients) {
+		foreach ($clients as $client) {
+		    if ($client !== $connection) {
+		        $client->write($data);
+		    }
+		}
+	    });
+	});
 
-    $clients->attach($connection);
+	 echo "Listening on " . $socket->getAddress() . "\n";
 
-    $connection->write("Welcome to the chat!\n");
+	$loop->run();
+}
 
-    $connection->on('data', function ($data) use ($connection, $clients) {
-        foreach ($clients as $client) {
-            if ($client !== $connection) {
-                $client->write($data);
-            }
-        }
-    });
-});
-
-echo "Listening on " . $socket->getAddress() . "\n";
-
-$loop->run();
+function isNotListening()
+{
+   return empty(exec('netstat -an | grep ' . $_ENV['TCP_ADDRESS_PORT']));
+}
