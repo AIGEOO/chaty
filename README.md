@@ -8,4 +8,4 @@ Chaty is a simple real-time command line chat application built with reactPHP
 4. create 2 clients or more: `php chaty client`   
 
 # Demo:
-<img src="demo.gif" />
+![demo](https://github.com/AIGEOO/chaty/blob/main/Demo.gif)
