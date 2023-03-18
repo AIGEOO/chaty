@@ -6,7 +6,6 @@ use React\Socket\ConnectionInterface;
 use React\Stream\ReadableResourceStream;
 use React\Stream\WritableResourceStream;
 
-
 function client() {
 	global $loop, $url;
 
@@ -18,7 +17,7 @@ function client() {
 	$client->connect($url)->then(function (ConnectionInterface $connection) use ($stdin, $stdout) {
         $stdin->on('data', function ($data) use ($connection) {
 
-	    	$time = date('g:i a'); // e.g. 5:37 pm
+	    $time = date('g:i a'); // e.g. 5:37 pm
             $connection->write("[$time]  <span class='font-bold'>$data</span> ");
         });
 
